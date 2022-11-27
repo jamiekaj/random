@@ -1,0 +1,821 @@
+Hello!
+This is a rough collection of useful tips on how to approach working in terminal / the BASH environment.
+Most of this is tailored for a MacOSx environment as this is what I was using at the beginning of writing this...
+But as I progressed and moved to using Debian Linux exclusively, this became the standard. But everything should work if you follow the instructions.
+
+Are you using a Linux based computer?
+Just open up terminal.
+  Sometimes a shortcut for this is "windows key" + t
+
+Are you using a Windows 10/11 based computer?
+Install Ubuntu Linux
+#https://docs.microsoft.com/en-us/windows/wsl/install
+Open PowerShell (as an administrator) > "wsl --install"
+  Optional: install Windows Terminal
+  https://aka.ms/terminal
+
+Are you using an Apple computer?
+Open Terminal.app
+  via Finder: Open Finder, navigate to Applications > Utilities > Terminal
+    A mildly fancy way via Spotlight: command(⌘) + space > start typing "terminal" + enter
+      A fancy way: Shift(⇧) + Command(⌘) + g > type "/Applications/Utilities" + enter > click to open Terminal
+        A fancier way: Shift(⇧) + Command(⌘) + u > start typing "terminal" + enter
+          A silly way - type the following into terminal: osascript -e 'tell application "Terminal" to activate' -e 'tell application "System Events" to tell process "Terminal" to keystroke "n" using command down'
+
+#############################################################################################################################
+Where am I? - print working directory
+  •		pwd
+
+What can I do? - get a list of all available commands
+  •		compgen -c
+
+Who am I? - print which user is currently logged in
+  •		whoami
+
+What am I looking at? - list files in current directory
+  •		ls
+
+I need help! - view the help manual for the "ls" command
+  •		ls –help
+
+using optional flags - ls with -l (list) flag
+  •		ls -l
+
+ls with both -l and -r (list and reverse) flags
+  •		ls -lr
+
+ls with -l -a and -r (list, reverse, and show ALL – including hidden files/directories)
+  •		ls -lar
+
+ls as above, but HUMAN readable file
+  •		ls -lahr
+
+ls as above, but now sorting most recently changed/created items - newest at bottom
+  •		ls -lathr
+
+print working directory – view help manual
+  •		pwd --help
+
+change directory
+"~" = "Home" directory = on Mac or Linux, something like /Users/NAME
+  •		cd ~
+  •		pwd
+
+change directory to /Users/NAME/Desktop
+  •		cd Desktop
+
+make directory named NAMEs_New_Folder
+  •		mkdir NAMEs_New_Folder
+
+get the full path of NAMEs_New_Folder
+  •		realpath NAMEs_New_Folder
+
+change directory to /Users/NAME/Desktop/NAMEs_New_Folder
+  •		cd NAMEs_New_Folder
+  •		pwd
+     o	Equivalent:
+     o	cd NAMEs_New_Folder
+     o	cd /Users/NAME/Desktop/NAMEs_New_Folder
+     o	cd ~/Desktop/NAMEs_New_Folder
+  •		ls -l
+
+have Terminal echo the following command –
+  •		echo –-help
+  •		man echo
+  •		echo "Hi NAME"
+  •		echo "Hi NAME!"
+  •		echo 'Hi NAME!'
+  •		echo -e 'NAME\nNAME\nNAME\nNAME\nNAME'
+
+(the forward slash is used to declare that the following character is special - ie. to interpret "n" as a command to create a new line)
+
+setting variables + TAB autocomplete
+  •		greeting_for_NAME='Hi NAME!'
+  •		echo $gre[press tab to autocomplete, the below line should appear]
+  •		echo $greeting_for_NAME
+    - seriously, the tab autocomplete function is your friend! When in doubt, type as much as you know and press tab.
+
+simply print the date
+  •		date
+
+get the help manual for date
+  •		date --help
+
+get the full manual for date
+  •		man date
+
+NANO text editor
+this is a simple text editor that should already be installed on most machines.
+
+       o	nano
+       -OR- to open a file in nano,
+       o	"nano SOME_TEXT_FILE.txt"
+
+       o	ctrl + g to view some welcome helpful text
+       o	ctrl + s to save
+       o	ctrl + x to close/exit
+
+VIM text editor
+VIM is a very powerful test editor that I recommend... but it can be scary at first.
+
+      to start:
+
+       o	vim
+        OR - You can also open any text file in vim by typing
+       o	"vim SOME_TEXT_FILE.txt"
+
+       o	by default, H, J, K, and L keys are used to move around
+       o  command + f to jump forward one page
+       o  command + b to jump back on page
+       o  shift + g to jump bottom of document
+       o  gg to jump top of document
+       o	"/whatever_you_want_to_search_for" + enter = search for whatever_you_want_to_search_for
+       o	ctrl(^) +	n = next search match
+       o	ctrl(^) +	b = back, previous search match
+       o	ctrl(^) +	v = "blockwise Visual selection" mode
+              o	 (while in visual selection mode) shift + i ... esc = insert something at the beginning of each selected line
+       o	shift +	v = "linewise(?) Visual selection" mode
+       o	u = undo
+       o	ctrl(^) +	r = redo
+       o	shift + : = enter a command
+          o	shift + : ... %s/TEXT_YOU_WANT_TO_REPLACE/NEW_TEXT/gc = use SED (string editor) to search and replace text
+
+       o	to actually type, press "i" - the bottom left corner should now read something like "-- INSERT --"
+in insert mode:
+       o	up/down arrow key to scroll
+       o	ctrl + x, ctrl + f = autocomplete file path
+       o	esc = exit insert mode
+
+       o	":q" + enter = quit
+              o	":w" + enter = writes changes to your file
+              o	":wqa!" + enter = writes changes to your file, closes vim, and does so without worrying about error messages
+
+       o	if you're really interested, VIM comes with a tutor,
+       o	in regular bash terminal, type "vimtutor"
+
+print a fancier version of the date
+  •		date +%Y%m%d_%H%M%S
+
+Use echo command to do the same thing
+  •		echo $(date +%Y%m%d_%H%M%S)
+
+make directory – get help manual
+  •		mkdir –-help
+
+make Directory "test_Folder_20210714_104554"
+  •		mkdir test_Folder_$(date +%Y%m%d_%H%M%S)
+  •		ls -lah
+
+get help manual for REMOVE command
+  •		rm --help
+
+as "rm" is an extremely powerful and potentially dangerous command, make sure to understand what it does
+  •		man rm
+
+BE CAREFUL WITH THIS - DO NOT TYPE SOMETHING LIKE "rm -rf /"
+this is just an important thought experiment –
+Why would this be a VERY bad idea?
+
+remove the directory /Users/NAME/Desktop/NAMEs_New_Folder/test_Folder_20210714_104554
+(assuming "pwd" returns "/Users/NAME/Desktop/NAMEs_New_Folder/")
+  •		rm -r test[press tab for autocomplete]
+
+simply create an empty place holder for test.txt
+  •		touch test.txt
+
+use the VIM text editor to edit test.txt
+  •		vi --help
+  •		vi test.txt
+     o	i – enter insert mode
+     o	copy and paste:
+
+>contig_10
+TCACGGAGCAGGTGGCAGTGGCAAGTTGACGAGTGATTAGTGGCGGATGTGGCAGTAGCT
+CCCCGAACCCTTCAGATTCTAGGCAACTTCGCAGTTCTTACCTGCGTCTAAGGAACACAA
+CAACTCACGTCAACATTATCGCTCCGAATCCGCCTACACACCTGGTGGAGGGAACTGGCA
+CACAAGGAGGCGCAGTACGAAATTCTGTGTGAACAAAGTGATGTTCAACGCCGTCACTAT
+GTGAATCTCAAGGGGATGGATTGAAACGAGGAAGCGTGCTTCTAGGTAGCATGCACAAAG
+CAGTAGTTGCCGACATGTCCTCCGCATGTACAGCAGCGCCGAATCGCCCATCACCTCTGA
+CGTCCTAATGTACAACAATGTTCAATCACCCATCACTCATGACGTTCAATTTGCGGGACA
+GACGTGGCTCTCTGAGTGATGTTGTACGGAATTGTGCGTAGTCACGGTGGTCGACAACGC
+CGTTACTATGTGAACCTCGTGGGGGACGGAGTGATGTGGGGAAGCCTCTTTTCTGTAGCA
+
+     o	press esc – exit insert mode
+     o	type ":w" + enter = write (save changes)
+     o	":wq" + enter = write and quite
+     o	":wqa!" + enter = write and quite, don’t give any warnings, close all VIM buffers
+
+If you are really interested in becoming familiar with the powerful vim text editor:
+  •		vimtutor
+
+alternatively, use NANO text editor
+     o	nano test.txt
+     o	copy and paste:
+
+>contig_10
+TCACGGAGCAGGTGGCAGTGGCAAGTTGACGAGTGATTAGTGGCGGATGTGGCAGTAGCT
+CCCCGAACCCTTCAGATTCTAGGCAACTTCGCAGTTCTTACCTGCGTCTAAGGAACACAA
+CAACTCACGTCAACATTATCGCTCCGAATCCGCCTACACACCTGGTGGAGGGAACTGGCA
+CACAAGGAGGCGCAGTACGAAATTCTGTGTGAACAAAGTGATGTTCAACGCCGTCACTAT
+GTGAATCTCAAGGGGATGGATTGAAACGAGGAAGCGTGCTTCTAGGTAGCATGCACAAAG
+CAGTAGTTGCCGACATGTCCTCCGCATGTACAGCAGCGCCGAATCGCCCATCACCTCTGA
+CGTCCTAATGTACAACAATGTTCAATCACCCATCACTCATGACGTTCAATTTGCGGGACA
+GACGTGGCTCTCTGAGTGATGTTGTACGGAATTGTGCGTAGTCACGGTGGTCGACAACGC
+CGTTACTATGTGAACCTCGTGGGGGACGGAGTGATGTGGGGAAGCCTCTTTTCTGTAGCA
+
+     o	control(^) + x = exit
+     o	y = save test.txt
+
+################################################################################
+################################################################################
+################################################################################
+Introduction to pipes ##########################################################
+################################################################################
+################################################################################
+################################################################################
+
+get test.txt and display it on screen with standard output
+  •		man cat
+  •		cat test.txt
+
+get test.txt and display it on screen with standard output, print first line only
+  •		man head
+  •		cat test.txt | head -n 1
+
+get test.txt and display it on screen with standard output, print last three lines only
+  •		man tail
+  •		cat test.txt | tail -n 3
+
+get test.txt and display it on screen with standard output, search for
+  •		man grep
+  •		cat test.txt | grep GAAT
+
+count the number of hits
+  •		man wc
+  •		cat test.txt | grep -o GAAT | wc -l
+
+get manual for Disk Usage
+  •		man du
+
+see disk usage (human readable sizes)
+  •		du -h test.txt
+
+get manual for Disk Free Space
+  •		man df
+  •		df
+  •		df -h
+
+get the free space of your root directory (human readable size)
+  •		df -h /
+
+clear terminal
+  •		control + l
+
+print terminal history
+  •		history
+
+introduction to grep (Global Regular Expression Parser) print history, search for NAME
+  •		history | grep "NAME"
+
+print history, search for NAME, and ignore case
+  •		history | grep -i "NAME"
+
+     o	control(^) + a = move to the beginning of the line in bash
+     o	control(^) + e = move to the end of the line in bash
+     o	control(^) + u = clear everything before cursor
+     o	right arrow key OR control(^) + f = move forward one word
+     o	left arrow key OR control(^) + b = move back one word
+
+################################################################################
+################################################################################
+################################################################################
+SSH ############################################################################
+################################################################################
+################################################################################
+################################################################################
+
+edit ssh (Secure Shell Protocol) config file for easier access to remote computers
+eg., I can log into the compute cluster here at UK with "ssh lcc" instead of "ssh jkno224@lcc.uky.edu" – you can have multiple shortcuts like this.
+
+  •		vi ~/.ssh/config
+
+mine looks like this:
+
+Host lcc
+HostName lcc.uky.edu
+User jkno224
+
+Host dtn
+HostName dtn.ccs.uky.edu
+User jkno224
+
+Host clc
+HostName 10.163.185.18
+User gluck_clc_user
+
+ssh-keygen for EVEN easier access to remote computers
+  •		man ssh-keygen
+  •		"/DESCRIPTION" + enter
+  •		q
+  •		ssh-keygen
+     o	[follow prompts – default values are fine]
+  •		ssh-copy-id jkno224@lcc.uky.edu
+     o	or
+  •		ssh-copy-id lcc
+     o	(if ~/.ssh/config is setup)
+
+Copy files between two computers
+  •		man scp
+
+local file to non-local directory:
+  •		scp [local file] [credentials]@[destination]:[ non-local file location]/.
+  •		scp test.txt jkno224@lcc.uky.edu:/mnt/gpfs2_4m/scratch/jkno224/.
+     o	OR, if your ~/.ssh/config file is setup correctly:
+  •		scp test.txt lcc:/mnt/gpfs2_4m/scratch/jkno224/.
+
+################################################################################
+################################################################################
+################################################################################
+Wildcard (*) character #########################################################
+################################################################################
+################################################################################
+################################################################################
+
+Wildcard (*) character can be used – will copy all files ending in ".txt" to destination directory:
+  •		scp *.txt lcc:/mnt/gpfs2_4m/scratch/jkno224/.
+
+Wildcard (*) character can also be used like this – will copy all files containing "m" at beginning of the file name to destination directory:
+
+  •		scp m* lcc:/mnt/gpfs2_4m/scratch/jkno224/.
+
+Wildcard (*) character can also be used like this – will copy all files containing "NAME" at beginning, somewhere in the middle, or at the end of the file name to destination directory:
+
+  •		scp *NAME* lcc:/mnt/gpfs2_4m/scratch/jkno224/.
+
+(the /. at the end prevents the rare occurrence of test.txt overwriting everything in /mnt/gpfs2_4m/scratch/jkno224/)
+
+non-local file to local directory:
+  •		scp [credentials]@[destination]:[ non-local file location]/test.txt [local directory]/.
+  •		scp lcc:/mnt/gpfs2_4m/scratch/jkno224/test.txt ~/Desktop/.
+
+Note: For copying whole directories, scp -r (recursive)
+  •		man scp
+  •		"/-r" + enter
+  •		"q" = quit
+  •		scp -r NAMEs_really_cool_directory lcc:/mnt/gpfs2_4m/scratch/jkno224/.
+
+################################################################################
+################################################################################
+################################################################################
+Scripting intro ################################################################
+################################################################################
+################################################################################
+################################################################################
+
+for f in *.txt; do echo ${f}; done
+
+################################################################################
+################################################################################
+################################################################################
+Miscellaneous ##################################################################
+################################################################################
+################################################################################
+################################################################################
+
+################################################################################
+Checking the weather (one of many ways)
+  •		man finger
+  •		finger sacramento@graph.no
+  •		finger ghent@graph.no
+
+################################################################################
+Installing homebrew
+  •		/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  •		man brew
+  •		brew update
+  •		brew upgrade
+  •		brew search blast
+  •		brew install blast
+  •		brew install wget
+  •		brew install igv
+  •		brew install seqkit
+  •		brew install tmux
+  •		brew install cask
+  •		brew install --cask firefox
+  •		open /Applications/Firefox.app
+  •		brew install --cask iterm2
+  •		open /Applications/iTerm.app
+
+  ################################################################################
+  Where are my applications located?
+  •		which tmux
+     o	/usr/local/bin/tmux
+
+     ################################################################################
+     ################################################################################
+     ################################################################################
+     TMUX - terminal multiplexing! ##################################################
+     This turns one terminal instance into how ever many you want! ##################
+     ################################################################################
+     ################################################################################
+
+  •		tmux
+     o	(fancier: tmux new -s NAMEsTmuxSession)
+
+  tell tmux you're about to enter a command:
+  •		ctrl + b
+
+    Vertically split your window into two terminal instances:
+  •		ctrl + b (release all keys and then press - from here on i'll use a "..." to indicate this) SHIFT + %
+
+  Horizontally split your window into two terminal instances:
+  •		ctrl + b ... SHIFT + "
+
+  Switch a terminal instance from vertical to horizontal:
+  •		ctrl + b ... spacebar
+
+  Move a termninal instance around:
+  •		ctrl + b ... shift + }
+  •		ctrl + b ... shift + {
+
+  Resize a termninal instance:
+  •		ctrl + b ... ctrl + arrow key (ctrl+arrow can be pressed repeatedly or held down)
+
+  Move between termninal instances:
+  •		ctrl + b ... arrow keys
+
+  Scroll mode(?):
+  •		ctrl + b ... }
+  this allows you to use the arrow keys to scroll around your tmux window.
+  This is useful when the you want to see things above what the screen is showing you, among other things.
+
+  From within scroll mode you can copy and paste between tmux panes:
+    copy:
+  •		ctrl + b ... [ ... ctrl + spacebar ... arrow keys to highlight lines/text ... alt+w
+    paste:
+  •		ctrl + b ... ]
+
+  Rename a tmux session:
+  •		ctrl + b ... shift + $ ... (type something like NAMEsTmuxSession)
+
+  Detach from a tmux session:
+  •		ctrl + b ... d
+
+oh no! Did we kill all the process running in the tmux session? no! This is a really useful feature.
+You can start a task(s), detach from that tmux session, and close terminal - the task(s) will still be running so long as the computer is on.
+
+  list running tmux sessions:
+  •		tmux ls
+
+  Re-attach a tmux session:
+  •		tmux a -t NAMEsTmuxSession
+
+  See running tmux sessions:
+  •		ctrl + b ... s ... up/down arrow ... enter (to select which running tmux instance to attach to)
+
+  Close a terminal instance:
+  •		exit
+  or
+  •		ctrl + b ... x ... y
+
+################################################################################
+Consider Installing Miniconda
+  •		https://docs.conda.io/en/latest/miniconda.html
+     o	useful for installing other applications... conda helps install all the other tiny applications that the main application requires (dependencies)
+     and handles exceptions like when the application requires a specific version of a program
+     (like if you application requires python 2.7 and you have python 3 installed)...
+     something like:
+
+  •		conda create -n gatk -c bioconda gatk4
+  •		conda activate gatk4
+  •		gatk
+
+################################################################################
+Countdown to Halloween 🎃
+  •		brew install coreutils
+     o	(needs "gdate" or "GNU (GNU's Not Unix!) date" instead of Mac’s branch of "date" command)
+  •		vi countdown_to_halloween.sh
+#!/bin/sh
+TODAY=$((10#$(gdate +%j)))
+dateToday=$(gdate +"%Y_%m_%d")
+HALLOWEEN=$(gdate -d "Oct 31" +%j)
+NEXTHALLOWEEN=$(($(gdate -d "Oct 31 +1 years" +%j)+367))
+DAYS_ThisHalloween=$(($HALLOWEEN - $TODAY))
+DAYS_NextHalloween=$(($NEXTHALLOWEEN - $TODAY))
+if [ "$DAYS_ThisHalloween" == 0 ]; then
+Halloween_Status=$(echo "🎃Happy Halloween🎃" );
+elif [ "$HALLOWEEN" -gt "$TODAY" ]; then
+Halloween_Status=$(echo "$DAYS_ThisHalloween" );
+elif [ "$HALLOWEEN" -lt "$TODAY" ]; then
+Halloween_Status=$( echo "$DAYS_NextHalloween" );
+fi
+echo $Halloween_Status
+  •		:wq
+  •		bash countdown_to_halloween.sh
+
+################################################################################
+…Alternatively…
+################################################################################
+
+#!/bin/bash -i
+TODAY=$(($(date +%j)))
+dateToday=$(date +"%Y_%m_%d")
+HALLOWEEN=$(date -d "Oct 31" +%j)
+NEXTHALLOWEEN=$(($(date -d "Oct 31 +1 years" +%j)+367))
+DAYS_ThisHalloween=$(($HALLOWEEN - $TODAY))
+DAYS_NextHalloween=$(($NEXTHALLOWEEN - $TODAY))
+if [ "$DAYS_ThisHalloween" == 0 ]; then
+Halloween_Status=$(echo "🎃Happy Halloween🎃" );
+elif [ "$HALLOWEEN" -gt "$TODAY" ]; then
+Halloween_Status=$(echo "$DAYS_ThisHalloween" );
+elif [ "$HALLOWEEN" -lt "$TODAY" ]; then
+Halloween_Status=$( echo "$DAYS_NextHalloween" );
+fi
+echo $Halloween_Status
+  •		:wq
+  •		bash countdown_to_halloween.sh
+
+################################################################################
+################################################################################
+################################################################################
+R primer #######################################################################
+################################################################################
+################################################################################
+################################################################################
+
+################################################################################
+INSTALL R
+################################################################################
+
+https://cran.r-project.org/bin/macosx/
+download https://cran.r-project.org/bin/macosx/base/R-4.1.2.pkg
+can be done via terminal:
+
+  •		wget https://cran.r-project.org/bin/macosx/base/R-4.1.2.pkg
+  •		installer -help
+  •		installer -pkg R-4.1.2.pkg -target /Applications
+
+You should see someting lke this... although the version will be different:
+R should be installed now... try:
+  •		R
+
+  R version 4.1.0 (2021-05-18) -- "Camp Pontanezen"
+  Copyright (C) 2021 The R Foundation for Statistical Computing
+  Platform: x86_64-apple-darwin17.0 (64-bit)
+
+  R is free software and comes with ABSOLUTELY NO WARRANTY.
+  You are welcome to redistribute it under certain conditions.
+  Type 'license()' or 'licence()' for distribution details.
+
+  R is a collaborative project with many contributors.
+  Type 'contributors()' for more information and
+  'citation()' on how to cite R or R packages in publications.
+
+  Type 'demo()' for some demos, 'help()' for on-line help, or
+  'help.start()' for an HTML browser interface to help.
+  Type 'q()' to quit R.
+
+  •		q()
+Save workspace image? [y/n/c]:
+  •		n
+
+  Optional, but highly recommended:
+  download Rstudio - a development environment (IDE) for R with a lot of useful features:
+  https://www.rstudio.com/products/rstudio/download/#download
+
+################################################################################
+Starting with R
+################################################################################
+
+open Rstudio
+  File > New File > R script
+     o	(this will create a new text document containing your code)
+
+find out where you are (what your working directory is)
+  •		getwd()
+
+     o	ctrl+alt+r - run all the code in your R script
+     o	 OR
+     o	highlight code you want to run and ctrl+enter to run just that one line
+
+Change working directory
+  •		setwd('~/Desktop/')
+
+Make sure you changed your working directory
+  •		getwd()
+     o	(The console below your script should look like this:)
+
+     o	getwd()
+     o	[1] "/Users/NAME/Desktop")
+
+################################################################################
+Set variables in R
+################################################################################
+  •		a <- 1
+  •		b <- 2
+  •		a+b
+
+if you run this (ctrl+alt+r), you should get this in the console window below:
+     o	a <- 1
+     o	b <- 2
+     o	a+b
+     o	[1] 3
+
+################################################################################
+Operate on Variables in R (apply a function to a variable)
+################################################################################
+
+  •		c <- "NAME"
+    o	sets a new variable
+
+  •		typeof(c)
+    o	What kind of variable is this?
+
+  •		?nchar
+    o	I'm curious about the function nchar - add a question mark before the function
+
+  •		nchar(c)
+    o	put it all together - calls the function "nchar" and operates on variable "c"
+        o	this just counts the number of characters in the variable "c"
+
+################################################################################
+Write a simple FOR loop in R
+################################################################################
+logic: for some range of things, change the variable "f" to that thing, run something, repeat
+
+  •		1:5
+[1] 1 2 3 4 5
+
+  •		1:nchar(c)
+[1] 1 2 3 4 5
+
+  •		?cat
+  •	  ?substr
+    o	substr(x, start, stop)
+
+    The function substr takes x (some variable) and returns the entries from start ending with stop
+      if x = the variable c and start = 2 and stop = 4, what do you get?
+
+  •	  substr(c, 2, 4)
+
+Loop #1
+in english:"for each of these values, change f to that value and run the following command... which is to print something and skip to the next line ("\n")
+in R:
+
+  for(f in 1:nchar(c)){
+    cat(f,"\n")
+  }
+
+    o	Note: f and c are not special - you can use nearly anything as a variable (no spaces)- the following code works, too!
+
+  for(some_Really_Fancy_Variable in 1:nchar(c)){
+    cat(some_Really_Fancy_Variable,"\n")
+  }
+
+in english:"for each of these values, change f to that value and run the following command... which is take the varible c, apply the substr function, skip to the next line ("\n")
+in R:
+
+    for(f in 1:nchar(c)){
+      cat(substr(c,f,f),"\n")
+    }
+
+idk, have fun with it / fancy it up!
+
+  •	  ?paste
+  •	  ?paste0
+
+    for(f in 1:nchar(c)){
+      cat(substr(c,f,f))
+      cat(paste("is the",f,"character in",c),"\n")
+    }
+
+################################################################################
+Write a simple function in R
+################################################################################
+functions can be useful - this builds a reusable bit of code that you could use without having to re-write a bunch of lines of code
+
+CountLetters <- function(Your_Name) {
+  for(f in 1:nchar(Your_Name)){
+    cat(substr(Your_Name,f,f))
+    cat(paste("is the",f,"character in",Your_Name),"\n")
+    }
+ }
+
+  •	  CountLetters("NAME")
+  •	  CountLetters(c)
+
+################################################################################
+Write a simple WHILE loop in R
+################################################################################
+just another kind of loop - establish f as a number (1 in this case) and run the loop, adding 1 to f until f is equal to nchar(c)
+
+  f <- 1
+  while(f <= nchar(c)){
+    cat(f,"\n")
+    f <- f+1
+  }
+
+################################################################################
+Install packages
+################################################################################
+you'll likely work a lot with excel documents.
+we need to install a tool in order to read excel documents
+if you haven't already, install java
+https://www.java.com/en/download/
+
+  •		install.packages("xlsx","rJava")
+xlsx should be installed now! Great. but if you try the following code, it won't work yet.
+  •		read.xlsx()
+
+we need to load the xlsx library
+  •		library(xlsx)
+  •		?read.xlsx
+
+read.xlsx has many options, but only REQUIRES "file" and "sheetIndex" (number of which sheet of the xlsx file to read)
+
+  read.xlsx(
+    file,
+    sheetIndex,
+    sheetName = NULL,
+    rowIndex = NULL,
+    startRow = NULL,
+    endRow = NULL,
+    colIndex = NULL,
+    as.data.frame = TRUE,
+    header = TRUE,
+    colClasses = NA,
+    keepFormulas = FALSE,
+    encoding = "unknown",
+    password = NULL,
+    ...
+  )
+
+  •		read.xlsx(file = "~/Desktop/NAMEsReallyCoolData.xlsx", sheetIndex = 1, as.data.frame = TRUE, header=TRUE)
+
+(assuming your data is on the first sheet of the xlsx document... as.data.frame=TRUE is an option that I find helps... if your excel document has a header row, set this to TRUE to keep these as column names)
+This will simply read the first sheet of your xlsx document, we want to save this as a useable dataframe object that we can work with:
+("dataframe object" = pretty much the closest to an excel document you can get in R - technically in R it's just fancy list... stick with me - you'll see in a second)
+
+  •		NAMEsReallyCoolData <- read.xlsx(file = "~/Desktop/NAMEsReallyCoolData.xlsx", sheetIndex = 1, as.data.frame = TRUE, header=TRUE)
+  •		View(NAMEsReallyCoolData)
+
+
+Bioconductor is a very useful repository of tools which might not be available with the default "install.packages" tool.
+https://www.bioconductor.org/
+
+  •		install.packages("BiocManager")
+  •		BiocManager::install()
+  •		BiocManager::install("ggplot")
+  •		library(ggplot)
+
+
+#############
+GALAXY
+#############
+
+http://www.Toxodb.org > Tools > Galaxy > Go To Galaxy >  "I have read and understand the information above." > Continue to Galaxy > Continue > login
+
+Upload a file:
+Next to Tools (top left corner of page) click the "↑" next to the "★"
+Choose local files (bottom left) > select a file to upload to Galaxy (I chose ToxoDB-53_SneuronaSN3_Genome.fasta - the reference genome for the parasite that I we with)
+
+Upload larger files:
+https://www.globus.org/ > Login
+
+Download and install Globus Connect - the file transfer app from
+https://www.globus.org/globus-connect-personal
+
+https://veupathdb.globusgenomics.org/ > Get Data via Globus High speed file upload (Galaxy Version 1.0.0)
+
+"To use this tool to upload files from your computer:
+
+1.    Install the Globus Personal Connect Endpoint (GPC). Doing so is easy. Follow these instructions.
+2.    Activate the GPC program installed on your computer.
+3.    The Source Endpoint (for the first box above) can be found by clicking on the GPC icon on your machine.
+4.    The Source Path (for the second box above) can be found by browsing through your machine for the file you are interested in transferring.
+
+Example
+
+Specify your endpoint, and path within those endpoints.
+
+For Linux/[MAC]OS:
+
+Source Endpoint: username-mylocal-endpoint
+
+Source Path: /Users/username/my-path/local.txt
+
+For Windows Users:
+
+Source Endpoint: username-mylocal-endpoint
+
+Source Path: /C/Documents/my-path/local.txt
+
+You will need to modify the forward slashes in your Windows path to backward slashes. In addition, your drive name should be preceded and followed by a backward slash. Do not use any colon characters after the drive name. Instead use a backward slash."
+https://docs.globus.org/faq/globus-connect-endpoints
+
+For me, this looking like this:
+
+Source Endpoint:
+Leviathan
+Source Path:
+/C/Users/jamie/Documents/PhD/2020_10_DNA_SEQUENCING/RAW/20_Sspeeri_TCATCCTT-AGCTCGCT_L002_R2_001.fastq.gz
