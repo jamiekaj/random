@@ -1,4 +1,4 @@
-# random
+# Jamie Kaj Norris
 
 Thanks for checking out my Github.
 This is just a collection of scripts that I think are neat or am working on. 
