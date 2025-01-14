@@ -41,4 +41,3 @@ unset __mamba_setup
 # <<< mamba initialize <<<
 GENEMARK_PATH='/home/jknorris/storage/ctbrownroot/BRAKER/GeneMark_ETP/gmes_linux_64_4'
 
-GITHUB_TOKEN="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"
