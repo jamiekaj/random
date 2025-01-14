@@ -1,0 +1,44 @@
+:<<WELCOME
+   ██████   █████  ███████ ██   ██ ██████   ██████ 
+   ██   ██ ██   ██ ██      ██   ██ ██   ██ ██      
+   ██████  ███████ ███████ ███████ ██████  ██      
+   ██   ██ ██   ██      ██ ██   ██ ██   ██ ██      
+██ ██████  ██   ██ ███████ ██   ██ ██   ██  ██████ 
+WELCOME
+
+alias du='du -sh' # Use -sh for human-readable and summary
+alias df='df -h --exclude-type=tmpfs'
+alias tail='tail -n 1000 -f'
+alias wdf="watch -t -c -d -n 60 'df -h . --output=avail,size,used,pcent,target'"
+
+:<<'dfExplanation'
+FIELD_LIST is a comma-separated list of columns to be included. Valid field names are: 'source', 'fstype', 'itotal', 'iused', 'iavail', 'ipcent', 'size', 'used', 'avail', 'pcent' and 'target' (see info page).
+dfExplanation
+
+alias wwhereami="df -Th | grep -i jkno"
+alias wsqueue='watch -n 30 -d -t "squeue |  grep jkno"'
+alias wwatch="watch -n 30 -d -t 'ls -gGAth'"
+alias wtop="top -u jknorris -o %CPU"
+alias wmm="micromamba"
+alias l="ls -d */"
+
+SEQKIT_THREADS=$(nproc)
+
+# functions to load tools ##############################################################
+source ~/.functions
+#####################################################################################
+# >>> mamba initialize >>>
+# !! Contents within this block are managed by 'micromamba shell init' !!
+export MAMBA_EXE='/home/jknorris/.local/bin/micromamba';
+export MAMBA_ROOT_PREFIX='/home/jknorris/micromamba';
+__mamba_setup="$("$MAMBA_EXE" shell hook --shell bash --root-prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__mamba_setup"
+else
+    alias micromamba="$MAMBA_EXE"  # Fallback on help from micromamba activate
+fi
+unset __mamba_setup
+# <<< mamba initialize <<<
+GENEMARK_PATH='/home/jknorris/storage/ctbrownroot/BRAKER/GeneMark_ETP/gmes_linux_64_4'
+
+GITHUB_TOKEN="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"

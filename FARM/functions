@@ -1,0 +1,497 @@
+#!/bin/bash
+# misc. functions #########################################################################################################
+
+fscancel() {
+        squeue -u "$USER" | awk '{print $1}' | tail -n +2 | xargs -n 1 scancel
+}
+
+fsqueue() {
+        watch -n 15 -d -t 'squeue -u "$USER" -o "%.18i %.40j %.10M %.10l"'
+}
+
+fls() {
+	watch -t -c -d -n 30 'ls -oath --time-style="+%Y-%m-%d %H:%M:%S" --group-directories-first | awk -F " " '\''{print $5 " " $6 "\t" $4 "\t" $7}'\'' '
+}
+
+fls_fancy() {
+inotifywait -m -r -e create,modify,delete,move . |
+while read path action file; do
+  if [[ -f "$path$file" ]]; then  # Process only regular files
+    ls -l --time-style='+%Y-%m-%d %H:%M:%S' "$path$file" |
+    awk '{
+      time = $6 " " $7;
+      size = $5;
+      name = $9;
+      printf "%s\t%s\t%s\t%s\n", time, size, name, action # Include the action
+    }'
+  fi
+done
+}
+
+fHalloween() {
+	TODAY=$(date +%j)
+	TODAY_nozero=$(echo $TODAY | sed -r 's/0*([0-9]*)/\1/')
+	dateToday=$(date +"%Y_%m_%d")
+	HALLOWEEN=$(date -d "Oct 31" +%j)
+	NEXTHALLOWEEN=$(($(date -d "Oct 31 +1 years" +%j)+365))
+	DAYS_ThisHalloween=$(($HALLOWEEN - $TODAY_nozero))
+	DAYS_NextHalloween=$(($NEXTHALLOWEEN - $TODAY_nozero))
+	
+	if [ "$DAYS_ThisHalloween" == 0 ]
+	then
+	        Halloween_Status=$(echo "🎃Happy Halloween🎃")
+	elif [ "$DAYS_ThisHalloween" == 182 ]
+	then
+	        Halloween_Status=$(echo "${DAYS_ThisHalloween} - Happy Halfway-ween!")
+	elif [ "$HALLOWEEN" -gt "$TODAY_nozero" ]
+	then
+	        Halloween_Status=$(echo "$DAYS_ThisHalloween")
+	elif [ "$HALLOWEEN" -lt "$TODAY_nozero" ]
+	then
+	        Halloween_Status=$( echo "$DAYS_NextHalloween" )
+	else Halloween_Status=$( echo "🎃" )
+fi
+printf "Days Until Halloween: $Halloween_Status\n"
+}
+
+fimdonefortheday() {
+	find . -type f \( -name "*.sh" -o -name "*.R" \) -mtime -1 -print0 | xargs -0 realpath 2>/dev/null | tr '\n' ' '
+}
+
+# load functions #########################################################################################################
+
+load_R() {
+  if ! command -v R > /dev/null; then
+    module load R/4.3.2
+  fi
+  R
+}
+
+load_star() {
+  if ! command -v STAR > /dev/null; then
+    module load star/2.7.11a
+  fi
+}
+
+load_hisat2() {
+  if ! command -v hisat2 > /dev/null; then
+    module load hisat2/2.2.1
+  fi
+}
+
+load_bwa() {
+  if ! command -v bwa > /dev/null; then
+    module load bwa/0.7.17
+  fi
+}
+
+load_minimap2() {
+  if ! command -v minimap2 > /dev/null; then
+    module load minimap2/2.26
+  fi
+}
+
+load_fastqc() {
+  if ! command -v fastqc > /dev/null; then
+    module load fastqc/0.12.1
+  fi
+}
+
+load_trimgalore() {
+  if ! command -v trim_galore > /dev/null; then
+    #module load trimgalore/0.6.10
+    micromamba activate trimgalore
+  fi
+}
+
+load_trimmomatic() {
+  if ! command -v trimmomatic > /dev/null; then
+    module load trimmomatic/0.39
+  fi
+}
+
+load_featurecounts() {
+  if ! command -v featurecounts > /dev/null; then
+    micromamba activate featurecounts
+  fi
+}
+
+load_gatk() {
+  if ! command -v gatk > /dev/null; then
+    micromamba activate gatk4.6.10
+  fi
+}
+
+load_pigz() {
+  if ! command -v pigz > /dev/null; then
+    module load pigz/2.8
+  fi
+}
+
+load_htseq() {
+  if ! command -v htseq-count > /dev/null; then
+    module load htseq/2.0.3
+  fi
+}
+
+load_samtools() {
+  if ! command -v samtools > /dev/null; then
+    module load samtools/1.16.1
+  fi
+}
+
+load_picard() {
+  if ! command -v picard &> /dev/null; then
+    module load picard/3.1.1
+  fi
+}
+
+load_rclone() {
+  if ! command -v rclone &> /dev/null; then
+    module load rclone/1.65.1
+  fi
+}
+
+load_blast() {
+  if ! command -v blastn &> /dev/null; then
+    module load blast-plus/2.16.0
+  fi
+}
+
+load_bwa() { 
+	if ! command -v bwa &> /dev/null; then
+        module load bwa/0.7.17
+        fi
+}
+
+load_braker3() {
+  if ! command braker &> /dev/null; then
+    micromamba activate braker3 && module load bedtools2/2.31.1 gffread/0.12.7 stringtie/2.2.1
+  fi
+}
+
+load_kraken() {
+        if ! command kraken2 &> /dev/null; then
+        module load kraken2/2.1.2
+        fi
+}
+
+load_spades() {
+        if ! command spades.py &> /dev/null; then
+        micromamba activate spades
+        fi
+}
+
+load_ragtag() {
+        if ! command ragtag.py &> /dev/null; then
+        micromamba activate ragtag
+        fi
+}
+
+load_repeatmodeler() {
+	if ! command RepeatModeler &> /dev/null; then
+		module load repeatmodeler/2.0.4 
+	fi
+}
+
+load_repeatmasker() {
+	if ! command RepeatMasker &> /dev/null; then
+		module load repeatmasker/4.1.5
+	fi
+}
+
+load_sratoolkit() {
+	if ! command fasterq-dump &> /dev/null; then
+		module load sratoolkit/3.0.0
+	fi
+}
+
+load_pacbio() {
+	if ! command pbmm2 &> /dev/null; then
+		module load conda/pacbio/1
+	fi
+}
+
+load_isoseq() {
+if ! command pbmm2 &> /dev/null ; then micromamba activate isoseq; fi
+}
+
+load_multiqc() {
+	if ! command multiqc &> /dev/null; then
+		module load  multiqc/1.23
+	fi
+}
+#################################################################################################################################
+
+# LEGOS ######################################################################################################################
+
+get_samplename() {
+  local filename="$1"
+  local basename
+
+  # Remove common suffixes
+  basename="${filename%.*}"  # Remove the first extension
+  basename="${basename%.*}"  # Remove the second extension (if any)
+  basename="${basename%.*}"  # Remove the third extension (if any) 
+
+  case "${filename##*.}" in
+    "gz")
+      basename="${basename%.*}" # Remove extension before .gz
+      ;;
+    "fastq.gz")
+      basename="${basename%.*}"
+      ;;
+    "fastq")
+      basename="${basename%.*}"
+      ;;
+    "fa")
+      basename="${basename%.*}"
+      ;;
+  esac
+
+  echo "$basename"
+}
+
+run_fastqc() {
+    local INPUT1=$1
+    local INPUT2=$2
+    local OUTDIR=$3
+
+    [ ! -d ${OUTDIR}/fastqc ] && mkdir -p ${OUTDIR}/fastqc
+
+    load_fastqc
+    if [ ! -s ${OUTDIR}/fastqc/$(basename ${INPUT1}.fastq.gz)_fastqc.html ] || [ ! -s ${OUTDIR}/fastqc/$(basename ${INPUT2}.fastq.gz)_fastqc.html ]; then
+    fastqc ${INPUT1} ${INPUT2} -o ${OUTDIR}/fastqc --threads $(nproc)
+    fi
+}
+
+run_multiqc() {
+local OUTDIR=$1
+local TIME=$(date +%Y%m%d%H%M)
+
+[ ! -d ${OUTDIR}/multiqc/ ] && mkdir -p ${OUTDIR}/multiqc/
+
+	load_multiqc
+	[ ! -d ${OUTDIR}/multiqc/${TIME} ] && mkdir -p ${OUTDIR}/multiqc/${TIME}
+	multiqc --verbose --clean-up --interactive --outdir ${OUTDIR}/multiqc/${TIME} --force ${OUTDIR}
+}
+
+run_trim_galore() {
+local INPUT1=$1
+local INPUT2=$2
+local OUTDIR=$3
+    
+[ ! -d ${OUTDIR}/trimgalore ] && mkdir -p ${OUTDIR}/trimgalore
+    load_trimgalore
+    trim_galore --paired -q 30 --fastqc --cores $(nproc) --output_dir ${OUTDIR}/trimgalore ${INPUT1} ${INPUT2}
+}
+
+run_star() {
+local INPUT1=$1
+local INPUT2=$2
+local OUTDIR=$3
+local SAMPLENAME=$(get_samplename "$INPUT1")
+    
+
+[ ! -s ${OUTDIR}/STAR ] && mkdir -p ${OUTDIR}/STAR
+    load_star
+    STAR --runThreadN $(nproc) --genomeDir ~/storage/ctbrownroot/TB_T2T/STAR/ \
+    --readFilesIn ${INPUT1} ${INPUT2} --readFilesCommand zcat \
+    --outFileNamePrefix ${OUTDIR}/STAR/${SAMPLENAME} --outSAMtype BAM SortedByCoordinate
+    load_samtools
+    samtools collate -@ $(nproc) -o ${OUTDIR}/STAR/${SAMPLENAME}Aligned.sortedByCoord.out.bam ${OUTDIR}/STAR/${SAMPLENAME}Aligned.sortedByCoord.out.bam
+    samtools flagstat -@ $(nproc) -O tsv ${OUTDIR}/STAR/${SAMPLENAME}Aligned.sortedByCoord.out.bam > ${OUTDIR}/STAR/${SAMPLENAME}Aligned.sortedByCoord.out.bam.flagstat
+    samtools coverage --histogram -o ${OUTDIR}/STAR/${SAMPLENAME}_histogram.txt ${OUTDIR}/STAR/${SAMPLENAME}Aligned.sortedByCoord.out.bam
+    samtools coverage -o ${OUTDIR}/STAR/${SAMPLENAME}_coverage.txt ${OUTDIR}/STAR/${SAMPLENAME}Aligned.sortedByCoord.out.bam
+
+}
+
+run_cufflinks() {
+local BAMFILE=$1
+local OUTDIR=$2
+local SAMPLEFILE=$(get_samplename "$INPUT1")
+
+    load_cufflinks
+        [ ! -s ${OUTDIR}/cufflinks ] && mkdir -p ${OUTDIR}/cufflinks
+        cufflinks -p $(nproc) -o ${OUTDIR}/cufflinks \
+        -g ~/storage/ctbrownroot/TB_T2T/genomic.gtf \
+        --multi-read-correct \
+        --frag-bias-correct \
+        --library-type fr-unstranded \
+        --verbose \
+        ~/storage/ctbrownroot/TB_T2T/GCF_041296265.1_TB-T2T_genomic_plusYchrom.fna \
+        ${BAMFILE}
+}
+
+run_trimmomatic() {
+local INPUT1=$1
+local INPUT2=$2
+local OUTDIR=$3
+local SAMPLENAME=$(get_samplename "$INPUT1")
+local ILLUMINACLIP_file="/group/ctbrownroot/jknorris/EquCab3/all_illumina_trimmomatic_2022Aug01.fa"
+
+    [ ! -d ${OUTDIR}/trimmomatic ] && mkdir -p ${OUTDIR}/trimmomatic
+
+    load_trimmomatic
+    trimmomatic PE -quiet -threads $(nproc) ${INPUT1} ${INPUT2} \
+    ${OUTDIR}/trimmomatic/$(basename -s .fastq.gz ${INPUT1})_trim.fastq.gz \
+    ${OUTDIR}/trimmomatic/$(basename -s .fastq.gz ${INPUT1})_se.fastq.gz \
+    ${OUTDIR}/trimmomatic/$(basename -s .fastq.gz ${INPUT2})_trim.fastq.gz \
+    ${OUTDIR}/trimmomatic/$(basename -s .fastq.gz ${INPUT2})_se.fastq.gz \
+    ILLUMINACLIP:${ILLUMINACLIP_file}:2:40:15 LEADING:2 TRAILING:2 HEADCROP:15 SLIDINGWINDOW:4:15 MINLEN:50
+
+    [ -s ${OUTDIR}/trimmomatic/$(basename -s .fastq.gz ${INPUT1})_se.fastq.gz ] && rm ${OUTDIR}/trimmomatic/$(basename -s .fastq.gz ${INPUT1})_se.fastq.gz
+    [ -s ${OUTDIR}/trimmomatic/$(basename -s .fastq.gz ${INPUT2})_se.fastq.gz ] && rm ${OUTDIR}/trimmomatic/$(basename -s .fastq.gz ${INPUT2})_se.fastq.gz
+}
+
+run_hisat2() {
+local INPUT1=$1
+local INPUT2=$2
+local OUTDIR=$3
+local SAMPLENAME=$(get_samplename "$INPUT1")
+
+    [ ! -d ${OUTDIR}/HISAT2 ] && mkdir -p ${OUTDIR}/HISAT2
+    load_hisat2
+    hisat2 -q -t --threads $(nproc) --quiet --summary-file ${OUTDIR}/HISAT2/${SAMPLENAME}.summary \
+    -x /home/jknorris/storage/ctbrownroot/TB_T2T/HISAT2/TB -1 ${INPUT1} -2 ${INPUT2} -S ${OUTDIR}/HISAT2/${SAMPLENAME}.sam
+
+    load_samtools
+	samtools collate -@ $(nproc) -o ${OUTDIR}/HISAT2/${SAMPLENAME}.sam ${OUTDIR}/HISAT2/${SAMPLENAME}.sam
+	samtools flagstat -@ $(nproc) -O tsv ${OUTDIR}/HISAT2/${SAMPLENAME}.sam > ${OUTDIR}/HISAT2/${SAMPLENAME}.flagstat
+	samtools coverage --histogram -o  ${OUTDIR}/HISAT2/${SAMPLENAME}_histogram.txt ${OUTDIR}/HISAT2/${SAMPLENAME}.sam
+	samtools coverage -o  ${OUTDIR}/HISAT2/${SAMPLENAME}_coverage.txt ${OUTDIR}/HISAT2/${SAMPLENAME}.sam
+
+}
+
+run_featurecounts() {
+local INPUT1=$1
+local INPUT2=$2
+local OUTDIR=$3
+local SAMPLENAME=$(get_samplename "$INPUT1")
+
+    [ ! -d ${OUTDIR}/FEATURECOUNTS ] && mkdir -p ${OUTDIR}/FEATURECOUNTS
+
+    load_featurecounts
+    featureCounts -p -t exon -g gene_id -T $(nproc) -a ${INPUT1} -o ${OUTDIR}/FEATURECOUNTS/${SAMPLENAME}.counts ${INPUT2}
+}
+
+run_repeat() {
+	load_repeatmodeler
+	[ ! -s ${1/.fna/.njs} ]  && BuildDatabase -name ${1/.fna/} ${1}
+	RepeatModeler -database ${1/.fna/} -engine ncbi -threads $(nproc) ${1} -LTRStruct
+	load_repeatmasker
+	RepeatMasker -pa $(nproc) -a -gff -html -lib RM*/*classified ${1}
+	RepeatClassifier -consensi ${1/.fna/-families.fa} -stockholm ${1/.fna/-families.stk} -engine ncbi
+	~/bin/calcDivergenceFromAlign.pl -s ${1/.fna/}.divsum ${1}.align
+	faToTwoBit ${1} ${1/.fna/.2bit}
+	~/bin/createRepeatLandscape.pl -div ${1/.fna/}.divsum -twoBit ${1/.fna/.2bit} > ${1/.fna/.html}
+}
+
+run_backup() {
+	load_rclone 
+	rclone copy --progress --update --verbose --contimeout 60s \
+	--timeout 300s --retries 3 --transfers=$(nproc) --checkers=$(nproc) \
+	--low-level-retries 10 --stats 15s ~/storage/ctbrownroot/ box:/backup 
+	exit
+}
+
+run_fasterq_list() {
+	load_sratoolkit
+	load_pigz
+	while read f
+	do [ ! -f ${1}_1.fastq.gz ] && fasterq-dump --split-files -p -e $(nproc) ${1}; pigz -p $(nproc) -9 ${1}_1.fastq && pigz -p $(nproc) -9 ${1}_2.fastq
+	done < $(1)
+}
+
+run_gatkHaplotypeCaller() {
+local INPUT1=${1}
+local SAMPLENAME=$(get_samplename "$INPUT1")
+local OUTDIR=${2}
+
+if [[ {$INPUT1} =~ ".gz" ]]
+then
+load_pigz
+pigz -d -p $(nproc) ${INPUT1}
+fi
+
+ASSEMBLY="/group/ctbrownroot/jknorris/TB_T2T/GCF_041296265.1_TB-T2T_genomic_plusYchrom.fna"
+
+load_gatk  
+gatk HaplotypeCaller \
+--native-pair-hmm-threads $(nproc) --reference ${ASSEMBLY} --input ${INPUT1/.gz/} --sample-ploidy 2 --output ${OUTDIR}/${SAMPLENAME}.diploid.g.vcf.gz --emit-ref-confidence GVCF
+
+load_pigz 
+pigz -p $(nproc) ${INPUT1}
+
+}
+
+run_fasterq() {
+load_sratoolkit
+load_pigz
+[ ! -s ${1}_1.fastq.gz ] && fasterq-dump --split-files -p -e $(nproc) ${1}; pigz -p $(nproc) -9 ${1}_1.fastq && pigz -p $(nproc) -9 ${1}_2.fastq
+}
+
+run_srun_H_M_C() {
+	srun -A ctbrowngrp -p med2 -t ${1}:00:00 --mem ${2}G --cpus-per-task=${3} --pty bash
+}
+
+srun_interactive() {
+  # Usage: srun_interactive [hours] [memory_gb] [cpus] [-d|--debug] [-p|--partition partition_name]
+
+  local hours memory_gb cpus partition debug
+
+  while getopts ":hd:p:" option; do
+    case "$option" in
+      h)
+        echo "Usage: srun_interactive [hours] [memory_gb] [cpus] [-d|--debug] [-p|--partition partition_name]"
+        return 0
+        ;;
+      d)
+        debug=true
+        hours=1
+        memory_gb=1
+        cpus=1
+        partition="low"
+        ;;
+      p)
+        partition="$OPTARG"
+        ;;
+      :)
+        echo "Error: Option -$OPTARG requires an argument." >&2
+        return 1
+        ;;
+      \?)
+        echo "Error: Invalid option: -$OPTARG" >&2
+        return 1
+        ;;
+    esac
+  done
+
+  shift $((OPTIND - 1)) # Shift positional arguments after options
+
+ if [[ -z "$debug" ]]; then # Only prompt for input if not in debug mode
+
+  if [[ -z "$hours" ]]; then
+    read -r -p "Enter the number of hours to request: " hours
+  fi
+
+  if [[ -z "$memory_gb" ]]; then
+    read -r -p "Enter the amount of RAM in GB to request per node: " memory_gb
+  fi
+
+  if [[ -z "$cpus" ]]; then
+    read -r -p "Enter the number of cores to request: " cpus
+  fi
+
+ fi
+
+
+  if [[ -z "$hours" ]] || [[ -z "$memory_gb" ]] || [[ -z "$cpus" ]]; then
+    echo "Error: Missing arguments. Use -h for help." >&2
+    return 1
+  fi
+
+  srun -A ctbrowngrp -p "${partition:-med2}" -t "${hours}:00:00" --mem "${memory_gb}G" --cpus-per-task="${cpus}" --pty bash
+}
+
+
