@@ -55,17 +55,37 @@ printf "Days Until Halloween: $Halloween_Status\n"
 }
 
 fimdonefortheday() {
-	find . -type f \( -name "*.sh" -o -name "*.R" \) -mtime -1 -print0 | xargs -0 realpath 2>/dev/null | tr '\n' ' '
+ find ~/storage/ctbrownroot/ -type f \( -name "*.sh" -o -name "*.R" \) -mtime -1 -print0 | xargs -0 realpath 2>/dev/null | tr '\n' ' '
 }
 
 # load functions #########################################################################################################
 
 load_R() {
   if ! command -v R > /dev/null; then
-    module load R/4.3.2
+#    module load R/4.2.3
+module load R/4.4.2
+#micromamba activate R
   fi
-  R
 }
+
+load_muscle() {
+if ! command -v muscle > /dev/null; then
+module load muscle5/5.1.0
+fi
+}
+
+load_bcftools() {
+if ! command -v bcftools > /dev/null; then
+module load bcftools/1.19
+fi
+}
+
+load_cufflinks() {
+if ! command -v cufflinks > /dev/null; then
+module load cufflinks/2.2.1
+fi
+}
+
 
 load_star() {
   if ! command -v STAR > /dev/null; then
@@ -104,6 +124,12 @@ load_trimgalore() {
   fi
 }
 
+load_prokka() {
+  if ! command -v prokka > /dev/null; then
+    micromamba activate prokka
+  fi
+}
+
 load_trimmomatic() {
   if ! command -v trimmomatic > /dev/null; then
     module load trimmomatic/0.39
@@ -128,6 +154,13 @@ load_pigz() {
   fi
 }
 
+load_bismark() {
+
+micromamba activate bowtie2.2.6
+/home/jknorris/bin/Bismark-0.24.2/bismark
+
+}
+
 load_htseq() {
   if ! command -v htseq-count > /dev/null; then
     module load htseq/2.0.3
@@ -136,7 +169,8 @@ load_htseq() {
 
 load_samtools() {
   if ! command -v samtools > /dev/null; then
-    module load samtools/1.16.1
+micromamba activate samtools
+#module load samtools/1.16.1
   fi
 }
 
@@ -225,31 +259,40 @@ load_multiqc() {
 
 # LEGOS ######################################################################################################################
 
+run_validatefastq() {
+        if ! command biopet-validatefastq &> /dev/null; then
+                micromamba activate base
+        fi
+
+biopet-validatefastq -i ${1} -j ${2}
+
+}
+
 get_samplename() {
-  local filename="$1"
-  local basename
+  local filename="$(basename $1)"
+  local name
 
   # Remove common suffixes
-  basename="${filename%.*}"  # Remove the first extension
-  basename="${basename%.*}"  # Remove the second extension (if any)
-  basename="${basename%.*}"  # Remove the third extension (if any) 
+  name="${filename%.*}"  # Remove the first extension
+  name="${name%.*}"  # Remove the second extension (if any)
+  name="${name%.*}"  # Remove the third extension (if any) 
 
   case "${filename##*.}" in
     "gz")
-      basename="${basename%.*}" # Remove extension before .gz
+      name="${name%.*}" # Remove extension before .gz
       ;;
     "fastq.gz")
-      basename="${basename%.*}"
+      name="${name%.*}"
       ;;
     "fastq")
-      basename="${basename%.*}"
+      name="${name%.*}"
       ;;
     "fa")
-      basename="${basename%.*}"
+      name="${name%.*}"
       ;;
   esac
 
-  echo "$basename"
+  echo "$name"
 }
 
 run_fastqc() {
@@ -263,6 +306,11 @@ run_fastqc() {
     if [ ! -s ${OUTDIR}/fastqc/$(basename ${INPUT1}.fastq.gz)_fastqc.html ] || [ ! -s ${OUTDIR}/fastqc/$(basename ${INPUT2}.fastq.gz)_fastqc.html ]; then
     fastqc ${INPUT1} ${INPUT2} -o ${OUTDIR}/fastqc --threads $(nproc)
     fi
+}
+
+run_seqkit_stats() {
+micromamba activate base
+~/bin/seqkit stats --threads $(nproc) "$@"
 }
 
 run_multiqc() {
@@ -389,7 +437,7 @@ run_repeat() {
 
 run_backup() {
 	load_rclone 
-	rclone copy --progress --update --verbose --contimeout 60s \
+	rclone copy --skip-links --progress --update --verbose --contimeout 60s \
 	--timeout 300s --retries 3 --transfers=$(nproc) --checkers=$(nproc) \
 	--low-level-retries 10 --stats 15s ~/storage/ctbrownroot/ box:/backup 
 	exit
@@ -424,6 +472,13 @@ load_pigz
 pigz -p $(nproc) ${INPUT1}
 
 }
+
+run_enaGroupGet() {
+
+python3 /home/jknorris/bin/enaBrowserTools/python3/enaGroupGet.py -f fastq -a ${1}
+
+}
+
 
 run_fasterq() {
 load_sratoolkit

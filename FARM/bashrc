@@ -1,16 +1,18 @@
 :<<WELCOME
-   ██████   █████  ███████ ██   ██ ██████   ██████ 
-   ██   ██ ██   ██ ██      ██   ██ ██   ██ ██      
-   ██████  ███████ ███████ ███████ ██████  ██      
-   ██   ██ ██   ██      ██ ██   ██ ██   ██ ██      
-██ ██████  ██   ██ ███████ ██   ██ ██   ██  ██████ 
+   ██████   █████  ███████ ██   ██ ██████   ██████
+   ██   ██ ██   ██ ██      ██   ██ ██   ██ ██
+   ██████  ███████ ███████ ███████ ██████  ██
+   ██   ██ ██   ██      ██ ██   ██ ██   ██ ██
+██ ██████  ██   ██ ███████ ██   ██ ██   ██  ██████
 WELCOME
 
-alias du='du -sh' # Use -sh for human-readable and summary
-alias df='df -h --exclude-type=tmpfs'
 alias tail='tail -n 1000 -f'
-alias wdf="watch -t -c -d -n 60 'df -h . --output=avail,size,used,pcent,target'"
+alias wdu="watch -t -c -d -n 60 'du -sh .'"
+alias wdu_hidden='du -hs .[^.]*'
+alias wls="watch -t -c -d -n 60 'ls -lath'"
 
+alias df='df -h ~ ~/storage/ctbrownroot/ --output=avail,size,used,pcent,target'
+alias wdf="watch -t -c -d -n 60 'df -h ~ ~/storage/ctbrownroot/ --output=avail,size,used,pcent,target'"
 :<<'dfExplanation'
 FIELD_LIST is a comma-separated list of columns to be included. Valid field names are: 'source', 'fstype', 'itotal', 'iused', 'iavail', 'ipcent', 'size', 'used', 'avail', 'pcent' and 'target' (see info page).
 dfExplanation
@@ -19,7 +21,9 @@ alias wwhereami="df -Th | grep -i jkno"
 alias wsqueue='watch -n 30 -d -t "squeue |  grep jkno"'
 alias wwatch="watch -n 30 -d -t 'ls -gGAth'"
 alias wtop="top -u jknorris -o %CPU"
+alias whtop="htop -u jknorris -s PERCENT_CPU"
 alias wmm="micromamba"
+alias wresources="/opt/hpccf/bin/slurm-show-resources.py --full"
 alias l="ls -d */"
 
 SEQKIT_THREADS=$(nproc)
@@ -39,5 +43,14 @@ else
 fi
 unset __mamba_setup
 # <<< mamba initialize <<<
-GENEMARK_PATH='/home/jknorris/storage/ctbrownroot/BRAKER/GeneMark_ETP/gmes_linux_64_4'
+
+export PKG_CONFIG_PATH=/share/apps/conda/environments/cesm-2.1.3/lib/pkgconfig/:$PKG_CONFIG_PATH
+
+GITHUB_TOKEN="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"
+
+export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
+
+
+export PATH="/home/jknorris/.pixi/bin:$PATH"
+eval "$(pixi completion --shell bash)"
 
